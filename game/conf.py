@@ -98,18 +98,40 @@ class Conf (object):
     REQUIRED_FONTS = dd({})
 
     # gameplay
+    # level
+    ENEMIES = {
+        'weak': {
+            'size': 10,
+            'mass': 5,
+            'health': .1,
+            'speed': 30,
+            'intelligence': 1,
+            'diff': 1
+        }
+    }
+    ENEMY_WEIGHTINGS = {'weak': 1}
+    # ai
+    ENEMY_LOST = .003 # chance of aiming at a random location
+    # proportion of screen around edges a lost enemy won't aim for
+    ENEMY_LOST_BORDER = .1
+    ENEMY_REEVAL = 60 # mean time in frames between re-evaluating the target
+    ENEMY_TARGET_ACC = 2 # accuracy of choosing nearest target
+    ENEMY_MOVE_THRESHOLD = 5
+    ENEMY_SPEED_THRESHOLD = .3 # mean speed proportion loss
+    # physics
     STEP = .01
     MAIN_LAYER = 1
     PLAYER_LAYER = 2
-    COL_BIAS = .01
+    COL_BIAS = .005
     MOVE_FRICTION = .85
     ROTATE_FRICTION = .9
+    BDY_RADIUS = 20
     # entities
     ELAST = 1
     FRICTION = .7
     PLAYER_SIZE = 15
     PLAYER_MASS = 10
-    PLAYER_SPEED = 700
+    PLAYER_SPEED = 70
     PLAYER_HEALTH = 1
     SHOOT_RANGE = 200
     SHOOT_DAMAGE = .1

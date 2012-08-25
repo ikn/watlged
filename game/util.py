@@ -1,4 +1,5 @@
-from random import randrange
+from random import randrange, random
+from bisect import bisect
 from collections import defaultdict
 
 import pygame as pg
@@ -30,6 +31,23 @@ def ir (x):
 
 def randsgn ():
     return 2 * randrange(2) - 1
+
+def rand_in (a, b):
+    return a + random() * (b - a)
+
+
+def weighted_rand (ws):
+    if isinstance(ws, dict):
+        indices, ws = zip(*ws.iteritems())
+    else:
+        indices = range(len(ws))
+    cumulative = []
+    last = 0
+    for w in ws:
+        last += w
+        cumulative.append(last)
+    index = min(bisect(cumulative, cumulative[-1] * random()), len(ws) - 1)
+    return indices[index]
 
 
 # graphics
