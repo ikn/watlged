@@ -74,6 +74,17 @@ class Conf (object):
         ((pg.K_LEFT,), (pg.K_UP,), (pg.K_RIGHT,), (pg.K_DOWN,)),
         ((pg.K_a,), (pg.K_w, pg.K_COMMA), (pg.K_d, pg.K_e), (pg.K_s, pg.K_o))
     ]
+    KEYS_SHOOT = [(pg.K_SPACE,)]
+
+    # each is (move, aim, shoot)
+    # move is (type, ident), type one of 'kb', 'joy'*
+    # aim is one of 'move', 'mouse', 'joy'*
+    # shoot is (type, ident), type one of 'kb', 'click', 'joy'*
+    # *unsupported
+    CONTROL_SCHEMES = (
+        (('kb', 0), 'mouse', ('click', (1, 2, 3))),
+        (('kb', 1), 'move', ('kb', 0))
+    )
 
     # audio
     MUSIC_VOLUME = dd(.5) # per-backend
@@ -94,11 +105,14 @@ class Conf (object):
     MOVE_FRICTION = .85
     ROTATE_FRICTION = .9
     # entities
-    ELAST = .5
+    ELAST = 1
     FRICTION = .7
     PLAYER_SIZE = 15
     PLAYER_MASS = 10
     PLAYER_SPEED = 700
+    PLAYER_HEALTH = 1
+    SHOOT_RANGE = 200
+    SHOOT_DAMAGE = .01
 
     # levels
     LEVELS = {'main': {
