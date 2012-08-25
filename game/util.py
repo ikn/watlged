@@ -1,3 +1,4 @@
+from random import randrange
 from collections import defaultdict
 
 import pygame as pg
@@ -25,6 +26,10 @@ default_dict: the created defaultdict.
 def ir (x):
     """Returns the argument rounded to the nearest integer."""
     return int(round(x))
+
+
+def randsgn ():
+    return 2 * randrange(2) - 1
 
 
 # graphics

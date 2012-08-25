@@ -1,5 +1,5 @@
-from random import choice
 from math import cos, sin, atan2
+from random import choice
 
 import pygame as pg
 import pymunk as pm
@@ -38,12 +38,12 @@ class Level (object):
         self.enemies = []
         self.bullets = []
 
-    def shoot (self, start, angle, r, damage, *exclude):
-        end = start + (r * cos(angle), r * sin(angle))
+    def shoot (self, start, angle, rnge, damage, kb, *exclude):
+        end = start + (rnge * cos(angle), rnge * sin(angle))
         self.bullets.append((start, end))
         for o in self.players + self.enemies:
             if o not in exclude and o.shape.segment_query(start, end):
-                o.hit(damage)
+                o.hit(damage, kb, angle)
 
     def update (self):
         # mouse

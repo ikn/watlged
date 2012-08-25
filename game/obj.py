@@ -1,10 +1,11 @@
 from math import cos, sin, atan2, pi
+from random import expovariate
 
 import pygame as pg
 import pymunk as pm
 
 from conf import conf
-from util import ir
+from util import ir, randsgn
 from ext import evthandler as eh
 
 
@@ -23,8 +24,9 @@ class Obj (object):
         self.angle = 0
         self.health = self.max_health
 
-    def hit (self, damage):
-        self.health -= self.shoot_d
+    def hit (self, damage, kb, angle):
+        self.health -= damage
+        self.body.apply_impulse((kb * cos(angle), kb * sin(angle)))
         if self.health <= 0:
             self.die()
 
@@ -45,9 +47,12 @@ class Obj (object):
 class Player (Obj):
     def __init__ (self, level, pos, scheme):
         # initial properties
-        self.shoot_r = conf.SHOOT_RANGE
-        self.shoot_d = conf.SHOOT_DAMAGE
         self.max_health = conf.PLAYER_HEALTH
+        self.shoot_range = conf.SHOOT_RANGE
+        self.damage = conf.SHOOT_DAMAGE
+        self.max_cooldown = conf.SHOOT_COOLDOWN
+        self.shoot_acc = conf.SHOOT_ACCURACY
+        self.knockback = conf.SHOOT_KNOCKBACK
         Obj.__init__(self, level, pos, conf.PLAYER_SIZE, conf.PLAYER_MASS,
                      conf.PLAYER_LAYER)
         self.to_move = [0, 0]
@@ -77,6 +82,9 @@ class Player (Obj):
             })
         else:
             raise ValueError('invalid shoot scheme: {0}'.format(shoot_t))
+        # varying properties
+        self.cooldown = 0
+        self.weapon = conf.WEAPONS[conf.INITIAL_WEAPON]
 
     def move (self, key, mode, mods, dirn):
         self.to_move[dirn % 2] += 1 if dirn >= 2 else -1
@@ -88,10 +96,18 @@ class Player (Obj):
             f(evt.button)
 
     def shoot (self, *args):
-        self.level.shoot(self.body.position, self.angle, self.shoot_r,
-                         self.shoot_d, self)
+        if self.cooldown <= 0:
+            w = self.weapon
+            a = self.target_angle if self.aim_scheme == 'move' else self.angle
+            a += randsgn() * expovariate(self.shoot_acc * w['acc'])
+            self.level.shoot(self.body.position, a,
+                             w['range'] * self.shoot_range,
+                             w['damage'] * self.damage,
+                             w['kb'] * self.knockback, self)
+            self.cooldown = ir(self.max_cooldown * w['cooldown'])
 
     def update (self):
+        self.cooldown -= 1
         if self.shoot_scheme == 'click':
             if self.mouse_down:
                 self.shoot()

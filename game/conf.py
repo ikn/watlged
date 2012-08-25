@@ -112,7 +112,21 @@ class Conf (object):
     PLAYER_SPEED = 700
     PLAYER_HEALTH = 1
     SHOOT_RANGE = 200
-    SHOOT_DAMAGE = .01
+    SHOOT_DAMAGE = .1
+    SHOOT_COOLDOWN = 25 # frames between shots
+    SHOOT_ACCURACY = 15
+    SHOOT_KNOCKBACK = 1000
+
+    WEAPONS = {
+        'pistol': {
+            'range': 1,
+            'damage': .5,
+            'cooldown': 1,
+            'acc': 2,
+            'kb': .7
+        }
+    }
+    INITIAL_WEAPON = 'pistol'
 
     # levels
     LEVELS = {'main': {
