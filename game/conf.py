@@ -107,9 +107,30 @@ class Conf (object):
             'speed': 30,
             'intelligence': 1,
             'diff': 1
+        }, 'std': {
+            'size': 15,
+            'mass': 10,
+            'health': .2,
+            'speed': 40,
+            'intelligence': 1.5,
+            'diff': 2
+        }, 'tank': {
+            'size': 40,
+            'mass': 70,
+            'health': 1.8,
+            'speed': 20,
+            'intelligence': 5,
+            'diff': 3
+        }, 'swarm': {
+            'size': 10,
+            'mass': 5,
+            'health': .1,
+            'speed': 80,
+            'intelligence': 1.5,
+            'diff': 2
         }
     }
-    ENEMY_WEIGHTINGS = {'weak': 1}
+    ENEMY_WEIGHTINGS = {'weak': 1, 'std': .5, 'tank': .03, 'swarm': .3}
     # ai
     ENEMY_LOST = .003 # chance of aiming at a random location
     # proportion of screen around edges a lost enemy won't aim for
@@ -133,11 +154,12 @@ class Conf (object):
     PLAYER_MASS = 10
     PLAYER_SPEED = 70
     PLAYER_HEALTH = 1
-    SHOOT_RANGE = 200
+    SHOOT_RANGE = 300
     SHOOT_DAMAGE = .1
     SHOOT_COOLDOWN = 25 # frames between shots
     SHOOT_ACCURACY = 15
     SHOOT_KNOCKBACK = 1000
+    BULLETS_AT_ONCE = 1
 
     WEAPONS = {
         'pistol': {
@@ -145,7 +167,50 @@ class Conf (object):
             'damage': .5,
             'cooldown': 1,
             'acc': 2,
-            'kb': .7
+            'kb': .7,
+            'at_once': 1
+        }, 'shotgun': {
+            'range': .5,
+            'damage': 1,
+            'cooldown': 2,
+            'acc': .5,
+            'kb': 2,
+            'at_once': 5
+        }, 'laser': {
+            'range': 2,
+            'damage': .1,
+            'cooldown': .1,
+            'acc': 10,
+            'kb': .1,
+            'at_once': 1
+        }, 'rifle': {
+            'range': 5,
+            'damage': 5,
+            'cooldown': 5,
+            'acc': 20,
+            'kb': 10,
+            'at_once': 1
+        }, 'rocket': {
+            'range': 2.5,
+            'damage': 20,
+            'cooldown': 10,
+            'acc': .5,
+            'kb': 50,
+            'at_once': 3
+        }, 'machine': {
+            'range': .8,
+            'damage': .1,
+            'cooldown': .1,
+            'acc': 1,
+            'kb': .5,
+            'at_once': 1
+        }, 'knife': {
+            'range': .2,
+            'damage': 2,
+            'cooldown': 1,
+            'acc': .15,
+            'kb': 0,
+            'at_once': 10
         }
     }
     INITIAL_WEAPON = 'pistol'

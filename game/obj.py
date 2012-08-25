@@ -69,7 +69,8 @@ class Obj (object):
 
     def draw (self, screen):
         x, y = self.body.position
-        pg.draw.circle(screen, (255, 0, 0), (ir(x), ir(y)), self.radius)
+        c = (255, 0, 0) if isinstance(self, Player) else (0, 150, 0)
+        pg.draw.circle(screen, c, (ir(x), ir(y)), self.radius)
         a = self.angle
         length = 1.5 * self.radius
         end = (x + length * cos(a), y + length * sin(a))
@@ -86,6 +87,7 @@ class Enemy (Obj):
         self.re_eval = 0
 
     def die (self):
+        self.level.space.remove(self.body, self.shape)
         self.level.enemies.remove(self)
 
     def update (self):
@@ -129,6 +131,7 @@ class Player (Obj):
         self.max_cooldown = conf.SHOOT_COOLDOWN
         self.shoot_acc = conf.SHOOT_ACCURACY
         self.knockback = conf.SHOOT_KNOCKBACK
+        self.bullets_at_once = conf.BULLETS_AT_ONCE
         self.speed = conf.PLAYER_SPEED
         Obj.__init__(self, level, pos, conf.PLAYER_SIZE, conf.PLAYER_MASS,
                      conf.PLAYER_LAYER)
@@ -183,7 +186,8 @@ class Player (Obj):
             cooldown = self.max_cooldown * w['cooldown']
             self.cooldown = ir(cooldown)
             frame = self.level.game.scheduler.timer.frame
-            for i in xrange(max(1, ir(frame / cooldown))):
+            at_once = frame / cooldown + conf.BULLETS_AT_ONCE * w['at_once']
+            for i in xrange(max(1, ir(at_once))):
                 da = randsgn() * ev(acc)
                 shoot(pos, a + da, *args)
 

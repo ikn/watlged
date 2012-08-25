@@ -26,7 +26,7 @@ class Level (object):
                      ((z, z), (z, h))):
             body = pm.Body(pm.inf, pm.inf)
             shape = pm.Segment(body, a, b, r)
-            s.add(shape)
+            s.add_static(shape)
             shape.layers = conf.PLAYER_LAYER
         self.init_players(n_players)
         self.init_level(ident)
@@ -48,7 +48,7 @@ class Level (object):
         pg.mouse.set_pos(self.centre)
         self.mouse_pos = pm.Vec2d(pg.mouse.get_pos())
         self.enemies = []
-        self.add_enemies(10)
+        self.add_enemies(100)
         self.bullets = []
 
     def add_enemies (self, difficulty):
