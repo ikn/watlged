@@ -69,11 +69,11 @@ class Conf (object):
     KEYS_MINIMISE = (pg.K_F10,)
     KEYS_FULLSCREEN = (pg.K_F11, (pg.K_RETURN, pg.KMOD_ALT, True),
                     (pg.K_KP_ENTER, pg.KMOD_ALT, True))
-    KEYS_LEFT = (pg.K_LEFT, pg.K_a, pg.K_q)
-    KEYS_RIGHT = (pg.K_RIGHT, pg.K_d, pg.K_e)
-    KEYS_UP = (pg.K_UP, pg.K_w, pg.K_z, pg.K_COMMA)
-    KEYS_DOWN = (pg.K_DOWN, pg.K_s, pg.K_o)
-    KEYS_DIRN = (KEYS_LEFT, KEYS_UP, KEYS_RIGHT, KEYS_DOWN)
+
+    KEYS_MOVE = [
+        ((pg.K_LEFT,), (pg.K_UP,), (pg.K_RIGHT,), (pg.K_DOWN,)),
+        ((pg.K_a,), (pg.K_w, pg.K_COMMA), (pg.K_d, pg.K_e), (pg.K_s, pg.K_o))
+    ]
 
     # audio
     MUSIC_VOLUME = dd(.5) # per-backend
@@ -85,6 +85,27 @@ class Conf (object):
     # text rendering
     # per-backend, each a {key: value} dict to update fonthandler.Fonts with
     REQUIRED_FONTS = dd({})
+
+    # gameplay
+    STEP = .01
+    MAIN_LAYER = 1
+    PLAYER_LAYER = 2
+    COL_BIAS = .01
+    MOVE_FRICTION = .85
+    ROTATE_FRICTION = .9
+    # entities
+    ELAST = .5
+    FRICTION = .7
+    PLAYER_SIZE = 15
+    PLAYER_MASS = 10
+    PLAYER_SPEED = 700
+
+    # levels
+    LEVELS = {'main': {
+        'objs': [
+            ((0, 0), (5, 50), (40, 20))
+        ]
+    }}
 
 
 def translate_dd (d):

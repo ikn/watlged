@@ -438,7 +438,7 @@ volume: float to scale volume by.
             # everything), and we have an overlay (we know this will be
             # transparent), then draw everything (if dirty already drew
             # everything)
-            if (draw or o != o0) and overlay is not False and not dirty:
+            if (draw or o != o0) and o is not False and not dirty:
                 backend.dirty = True
                 new_draw = backend.draw(screen)
                 # merge draw and new_draw
@@ -718,6 +718,6 @@ if __name__ == '__main__':
         restarting = True
         while restarting:
             restarting = False
-            Game(Level).run()
+            Game(Level, 2).run()
 
 pg.quit()
