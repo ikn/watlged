@@ -78,10 +78,13 @@ class Obj (object):
 
 
 class Enemy (Obj):
-    def __init__ (self, level, pos, size, mass, health, speed, intelligence):
+    def __init__ (self, level, pos, size, mass, health, speed, intelligence,
+                  damage, kb):
         self.max_health = health
         self.max_speed = speed
         self.intelligence = intelligence
+        self.damage = damage
+        self.kb = kb
         Obj.__init__(self, level, pos, size, mass)
         self.target_angle = self.angle
         self.re_eval = 0
@@ -98,7 +101,7 @@ class Enemy (Obj):
             ps = self.level.players
             r = conf.ENEMY_TARGET_ACC * intelligence
             targets = [
-                ((1 / p.body.position.get_distance(pos)) * r, p.body)
+                ((1 / p.body.position.get_distance(pos)) * r, p)
                 for p in ps
             ] + [(conf.ENEMY_LOST, None)]
             target = targets[weighted_rand(zip(*targets)[0])][1]
@@ -107,16 +110,24 @@ class Enemy (Obj):
                 w, h = conf.RES
                 b = conf.ENEMY_LOST_BORDER
                 self.target = (rand_in(b, 1 - b) * w, rand_in(b, 1 - b) * h)
+                self.targeting_player = False
             else:
-                self.target = target.position
+                self.targeting_player = target
+                self.target = target.body.position
             # speed
             mean_loss = conf.ENEMY_SPEED_THRESHOLD / intelligence
             self.speed = self.max_speed * (1 - ev(1. / mean_loss))
             self.re_eval = ev(1. / conf.ENEMY_REEVAL)
         self.re_eval -= 1
-        to_move = self.target - pos
+        to_move = tm = self.target - pos
         if to_move.get_length() < conf.ENEMY_MOVE_THRESHOLD:
             to_move = [0, 0]
+        t = self.targeting_player
+        if t:
+            d = tm.get_length()
+            if d < self.radius + t.radius:
+                t.hit(self.damage * conf.ENEMY_DAMAGE,
+                      self.kb * conf.ENEMY_KNOCKBACK, tm.get_angle())
         self.to_move = to_move
         ax, ay, a = Obj.update(self)
         self.update_aim(ax, ay, a)
@@ -163,7 +174,8 @@ class Player (Obj):
             raise ValueError('invalid shoot scheme: {0}'.format(shoot_t))
         # varying properties
         self.cooldown = 0
-        self.weapon = conf.WEAPONS[conf.INITIAL_WEAPON]
+        self.weapon = conf.INITIAL_WEAPON
+        self.weapon_data = conf.WEAPONS[self.weapon]
 
     def click (self, evt):
         if evt.button in self.shoot_btns:
@@ -173,7 +185,7 @@ class Player (Obj):
 
     def shoot (self, *args):
         if self.cooldown <= 0:
-            w = self.weapon
+            w = self.weapon_data
             if self.aim_scheme == 'move':
                 a = self.target_angle
             else:
@@ -183,6 +195,7 @@ class Player (Obj):
             args = (w['range'] * self.shoot_range, w['damage'] * self.damage,
                     w['kb'] * self.knockback, self)
             shoot = self.level.shoot
+            # decide number of times to shoot
             cooldown = self.max_cooldown * w['cooldown']
             self.cooldown = ir(cooldown)
             frame = self.level.game.scheduler.timer.frame
@@ -190,6 +203,8 @@ class Player (Obj):
             for i in xrange(max(1, ir(at_once))):
                 da = randsgn() * ev(acc)
                 shoot(pos, a + da, *args)
+            # play sound
+            #self.level.game.play_snd(self.weapon)
 
     def update (self):
         self.cooldown -= 1

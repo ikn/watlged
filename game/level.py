@@ -7,12 +7,16 @@ import pymunk as pm
 from conf import conf
 from obj import Player, Enemy
 from util import randsgn, rand_in, weighted_rand
+from ext import evthandler as eh
 
 
 class Level (object):
     def __init__ (self, game, event_handler, n_players = 1, ident = None):
         self.game = game
         self.event_handler = event_handler
+        event_handler.add_key_handlers([
+            (conf.KEYS_BACK, self.toggle_paused, eh.MODE_ONDOWN)
+        ])
         w, h = conf.RES
         self.centre = (w / 2, h / 2)
         self.space = s = pm.Space()
@@ -31,6 +35,7 @@ class Level (object):
         self.init_players(n_players)
         self.init_level(ident)
         self.wave = 0
+        self.paused = False
         self.init()
 
     def init_level (self, ident):
@@ -70,16 +75,23 @@ class Level (object):
             pos[axis] = x + rand_in(-25, 25)
             pos[not axis] = ev(.5 / difficulty)
             es.append(Enemy(self, pos, e['size'], e['mass'], e['health'],
-                            e['speed'], e['intelligence']))
+                            e['speed'], e['intelligence'], e['damage'],
+                            e['kb']))
 
     def shoot (self, start, angle, rnge, damage, kb, *exclude):
         end = start + (rnge * cos(angle), rnge * sin(angle))
         self.bullets.append((start, end))
         for o in self.players + self.enemies:
             if o not in exclude and o.shape.segment_query(start, end):
+                self.game.play_snd('hit')
                 o.hit(damage, kb, angle)
 
+    def toggle_paused (self, *args):
+        self.paused = not self.paused
+
     def update (self):
+        if self.paused:
+            return
         # mouse
         x0, y0 = self.centre
         x, y = pg.mouse.get_pos()
@@ -95,6 +107,10 @@ class Level (object):
         self.space.step(conf.STEP)
 
     def draw (self, screen):
+        if self.dirty:
+            self.dirty = False
+        elif self.paused:
+            return False
         screen.fill((255, 255, 255))
         for e in self.enemies + self.players:
             e.draw(screen)

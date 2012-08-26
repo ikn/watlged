@@ -25,6 +25,8 @@ from game.ext import evthandler as eh
 if conf.USE_FONTS:
     from game.ext.fonthandler import Fonts
 
+pg.mixer.set_num_channels(32)
+
 
 def get_backend_id (backend):
     """Return the computed identifier of the given backend.
@@ -110,6 +112,7 @@ music: filenames for known music.
         pg.mixer.music.set_endevent(conf.EVENT_ENDMUSIC)
         self.find_music()
         self.play_music()
+        self._sounds = {}
 
     def _init_backend (self):
         """Set some default attributes for a new backend."""
@@ -343,19 +346,19 @@ base_ID: the ID of the sound to play (we look for base_ID + i for a number i,
 volume: float to scale volume by.
 
 """
-        try:
-            n = conf.SOUNDS[base_ID]
-        except KeyError:
-            return
-        IDs = [base_ID + str(i) for i in xrange(n)]
-        ID = choice(IDs)
+        return
+        ID = choice(range(conf.SOUNDS[base_ID]))
         # load sound
-        snd = conf.SOUND_DIR + ID + '.ogg'
-        snd = pg.mixer.Sound(snd)
+        snd = conf.SOUND_DIR + base_ID + str(ID) + '.ogg'
+        if snd in self._sounds:
+            snd = self._sounds[snd]
+        else:
+            snd = self._sounds[snd] = pg.mixer.Sound(snd)
         if snd.get_length() < 10 ** -3:
             # no way this is valid
             return
-        snd.set_volume(conf.SOUND_VOLUME * conf.SOUND_VOLUMES.get(base_ID, 1) * volume)
+        volume *= conf.SOUND_VOLUME * conf.SOUND_VOLUMES[base_ID]
+        snd.set_volume(volume)
         snd.play()
 
     def find_music (self):
@@ -718,6 +721,6 @@ if __name__ == '__main__':
         restarting = True
         while restarting:
             restarting = False
-            Game(Level, 2).run()
+            Game(Level, 1).run()
 
 pg.quit()

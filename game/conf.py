@@ -90,8 +90,8 @@ class Conf (object):
     MUSIC_VOLUME = dd(.5) # per-backend
     SOUND_VOLUME = .5
     EVENT_ENDMUSIC = pg.USEREVENT
-    SOUNDS = {} # numbers of sound files
-    SOUND_VOLUMES = {}
+    SOUNDS = {'pistol': 5, 'hit': 6} # numbers of sound files
+    SOUND_VOLUMES = dd(1)
 
     # text rendering
     # per-backend, each a {key: value} dict to update fonthandler.Fonts with
@@ -106,6 +106,8 @@ class Conf (object):
             'health': .1,
             'speed': 30,
             'intelligence': 1,
+            'damage': 3,
+            'kb': 1,
             'diff': 1
         }, 'std': {
             'size': 15,
@@ -113,6 +115,8 @@ class Conf (object):
             'health': .2,
             'speed': 40,
             'intelligence': 1.5,
+            'damage': 6,
+            'kb': 1.5,
             'diff': 2
         }, 'tank': {
             'size': 40,
@@ -120,6 +124,8 @@ class Conf (object):
             'health': 1.8,
             'speed': 20,
             'intelligence': 5,
+            'damage': 20,
+            'kb': 4,
             'diff': 3
         }, 'swarm': {
             'size': 10,
@@ -127,6 +133,8 @@ class Conf (object):
             'health': .1,
             'speed': 80,
             'intelligence': 1.5,
+            'damage': 2,
+            'kb': .5,
             'diff': 2
         }
     }
@@ -139,6 +147,8 @@ class Conf (object):
     ENEMY_TARGET_ACC = 2 # accuracy of choosing nearest target
     ENEMY_MOVE_THRESHOLD = 5
     ENEMY_SPEED_THRESHOLD = .3 # mean speed proportion loss
+    ENEMY_DAMAGE = .01
+    ENEMY_KNOCKBACK = 3000
     # physics
     STEP = .01
     MAIN_LAYER = 1
@@ -158,7 +168,7 @@ class Conf (object):
     SHOOT_DAMAGE = .1
     SHOOT_COOLDOWN = 25 # frames between shots
     SHOOT_ACCURACY = 15
-    SHOOT_KNOCKBACK = 1000
+    SHOOT_KNOCKBACK = 5000
     BULLETS_AT_ONCE = 1
 
     WEAPONS = {
@@ -172,13 +182,13 @@ class Conf (object):
         }, 'shotgun': {
             'range': .5,
             'damage': 1,
-            'cooldown': 2,
+            'cooldown': 3,
             'acc': .5,
             'kb': 2,
             'at_once': 5
         }, 'laser': {
-            'range': 2,
-            'damage': .1,
+            'range': .5,
+            'damage': .3,
             'cooldown': .1,
             'acc': 10,
             'kb': .1,
@@ -186,7 +196,7 @@ class Conf (object):
         }, 'rifle': {
             'range': 5,
             'damage': 5,
-            'cooldown': 5,
+            'cooldown': 3,
             'acc': 20,
             'kb': 10,
             'at_once': 1
@@ -206,7 +216,7 @@ class Conf (object):
             'at_once': 1
         }, 'knife': {
             'range': .2,
-            'damage': 2,
+            'damage': 1.5,
             'cooldown': 1,
             'acc': .15,
             'kb': 0,

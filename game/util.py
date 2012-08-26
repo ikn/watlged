@@ -32,6 +32,7 @@ def ir (x):
 def randsgn ():
     return 2 * randrange(2) - 1
 
+
 def rand_in (a, b):
     return a + random() * (b - a)
 
