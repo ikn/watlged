@@ -44,8 +44,8 @@ class Conf (object):
     FONT_DIR = DATA_DIR + 'font' + sep
 
     # display
-    WINDOW_ICON = None #IMG_DIR + 'icon.png'
-    WINDOW_TITLE = ''
+    WINDOW_ICON = IMG_DIR + 'icon.png'
+    WINDOW_TITLE = 'What Are Those Little Guys Even Doing'
     MOUSE_VISIBLE = dd(False) # per-backend
     FLAGS = 0
     FULLSCREEN = False
@@ -223,7 +223,6 @@ class Conf (object):
             'at_once': 10
         }
     }
-    INITIAL_WEAPON = 'pistol'
 
     # levels
     LEVELS = {'main': {

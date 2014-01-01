@@ -93,14 +93,15 @@ class Level (object):
         if self.paused:
             return
         # mouse
-        x0, y0 = self.centre
-        x, y = pg.mouse.get_pos()
-        pg.mouse.set_pos(self.centre)
-        mp = self.mouse_pos
-        mp += (x - x0, y - y0)
-        p = self.players[0]
-        dp = mp - p.body.position
-        p.angle = atan2(dp[1], dp[0])
+        if self.players:
+            x0, y0 = self.centre
+            x, y = pg.mouse.get_pos()
+            pg.mouse.set_pos(self.centre)
+            mp = self.mouse_pos
+            mp += (x - x0, y - y0)
+            p = self.players[0]
+            dp = mp - p.body.position
+            p.angle = atan2(dp[1], dp[0])
         # update players
         for e in self.players + self.enemies:
             e.update()
@@ -114,8 +115,9 @@ class Level (object):
         screen.fill((255, 255, 255))
         for e in self.enemies + self.players:
             e.draw(screen)
-        x, y = self.mouse_pos
-        pg.draw.circle(screen, (0, 0, 255), (int(x), int(y)), 3)
+        if self.players:
+            x, y = self.mouse_pos
+            pg.draw.circle(screen, (0, 0, 255), (int(x), int(y)), 3)
         for start, end in self.bullets:
             pg.draw.line(screen, (150, 150, 150), start, end)
         self.bullets = []

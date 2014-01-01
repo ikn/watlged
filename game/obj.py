@@ -1,5 +1,5 @@
 from math import cos, sin, atan2, pi
-from random import expovariate as ev, random
+from random import expovariate as ev, random, choice
 
 import pygame as pg
 import pymunk as pm
@@ -174,8 +174,14 @@ class Player (Obj):
             raise ValueError('invalid shoot scheme: {0}'.format(shoot_t))
         # varying properties
         self.cooldown = 0
-        self.weapon = conf.INITIAL_WEAPON
-        self.weapon_data = conf.WEAPONS[self.weapon]
+        self.weapon, self.weapon_data = choice(conf.WEAPONS.items())
+        self.dead = False
+
+    def die (self):
+        if not self.dead:
+            self.dead = True
+            self.level.space.remove(self.body, self.shape)
+            self.level.players.remove(self)
 
     def click (self, evt):
         if evt.button in self.shoot_btns:
